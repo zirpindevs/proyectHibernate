@@ -19,6 +19,10 @@ public class BillingInfo {
 
     private String country;
 
+    @OneToOne(mappedBy = "billingInfo")
+    private User user;
+
+
     public BillingInfo() {
     }
 
@@ -55,6 +59,15 @@ public class BillingInfo {
 
     public BillingInfo setCountry(String country) {
         this.country = country;
+        return this;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public BillingInfo setUser(User user) {
+        this.user = user;
         return this;
     }
 

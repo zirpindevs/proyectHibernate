@@ -21,6 +21,10 @@ public class User {
 
     private Instant createdDate;
 
+    @OneToOne
+    @JoinColumn(name = "id_billing_info")
+    private BillingInfo billingInfo;
+
     public User() {
     }
 
@@ -66,6 +70,15 @@ public class User {
 
     public User setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
+        return this;
+    }
+
+    public BillingInfo getBillingInfo() {
+        return billingInfo;
+    }
+
+    public User setBillingInfo(BillingInfo billingInfo) {
+        this.billingInfo = billingInfo;
         return this;
     }
 

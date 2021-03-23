@@ -2,6 +2,8 @@ package com.example.proyecto5hibernate.model;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tasks")
@@ -18,6 +20,10 @@ public class Task {
     private Boolean finished;
 
     private Instant finishDate;
+
+    @OneToMany(mappedBy = "task")
+    public List<Tag> tags = new ArrayList<>();
+
 
     public Task() {
     }
@@ -49,12 +55,22 @@ public class Task {
         return this;
     }
 
-    public Instant getCreatedDate() {
+    public Instant getFinishDate() {
         return finishDate;
     }
 
-    public Task setCreatedDate(Instant createdDate) {
-        this.finishDate = createdDate;
+    public Task setFinishDate(Instant finishDate) {
+        this.finishDate = finishDate;
+        return this;
+    }
+
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public Task setTags(List<Tag> tags) {
+        this.tags = tags;
         return this;
     }
 
@@ -65,7 +81,7 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", finished=" + finished +
-                ", createdDate=" + finishDate +
+                ", finishDate=" + finishDate +
                 '}';
     }
 }
