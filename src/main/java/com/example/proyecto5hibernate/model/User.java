@@ -2,6 +2,8 @@ package com.example.proyecto5hibernate.model;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +26,9 @@ public class User {
     @OneToOne
     @JoinColumn(name = "id_billing_info")
     private BillingInfo billingInfo;
+
+    @OneToMany(mappedBy = "user")
+    public List<Task> tasks = new ArrayList<>();
 
     public User() {
     }
@@ -79,6 +84,15 @@ public class User {
 
     public User setBillingInfo(BillingInfo billingInfo) {
         this.billingInfo = billingInfo;
+        return this;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public User setTasks(List<Task> tasks) {
+        this.tasks = tasks;
         return this;
     }
 

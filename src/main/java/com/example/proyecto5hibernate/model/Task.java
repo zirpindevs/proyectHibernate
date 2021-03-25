@@ -24,6 +24,10 @@ public class Task {
     @OneToMany(mappedBy = "task")
     public List<Tag> tags = new ArrayList<>();
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_user")
+    private User user;
+
 
     public Task() {
     }
@@ -71,6 +75,15 @@ public class Task {
 
     public Task setTags(List<Tag> tags) {
         this.tags = tags;
+        return this;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public Task setUser(User user) {
+        this.user = user;
         return this;
     }
 
