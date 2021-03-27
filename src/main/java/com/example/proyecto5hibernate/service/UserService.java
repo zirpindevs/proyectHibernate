@@ -7,5 +7,6 @@ import java.util.List;
 public interface UserService {
 
     List<User> findAllFromSession();
+    List<User> findAllFromRepository();
 
 }

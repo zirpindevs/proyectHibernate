@@ -7,5 +7,6 @@ import java.util.List;
 public interface UserDAO {
 
     List<User> findAllFromSession();
+    List<User> findAllFromRepository();
 
 }

@@ -22,4 +22,12 @@ public class UserServiceImpl implements UserService {
         System.out.println("***********");
         return results;
     }
+
+    @Override
+    public List<User> findAllFromRepository() {
+        List<User> results = this.userDAO.findAllFromRepository();
+        System.out.println("***********");
+        return results;
+    }
+
 }

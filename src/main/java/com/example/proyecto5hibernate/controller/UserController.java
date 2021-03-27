@@ -12,16 +12,18 @@ import java.util.List;
 @RequestMapping("/api")
 public class UserController {
 
-    private final UserService UserService;
+    private final UserService userService;
 
-    public UserController(com.example.proyecto5hibernate.service.UserService userService) {
-        UserService = userService;
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
 
     @GetMapping("/users")
     public List<User> findAll() {
-        return UserService.findAllFromSession();
+        return userService.findAllFromRepository();
     }
+
+
 
 }

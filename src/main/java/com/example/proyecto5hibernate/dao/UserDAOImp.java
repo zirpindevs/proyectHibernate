@@ -27,4 +27,11 @@ public class UserDAOImp implements UserDAO {
     public List<User> findAllFromSession() {
         return session.createQuery("from User e").list();
     }
+
+
+    @Override
+    public List<User> findAllFromRepository() {
+        return repository.findAll();
+    }
+
 }
