@@ -13,24 +13,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="name")
     private String name;
 
+    @Column(name="surname")
     private String surname;
 
+    @Column(name="dni")
     private String dni;
 
+    @Column(name="is_active")
     private Boolean isActive;
 
+    @Column(name="created_date")
     private Instant createdDate;
 
     @OneToOne
     @JoinColumn(name = "id_billing_info")
     private BillingInfo billingInfo;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     public List<Task> tasks = new ArrayList<>();
 
     public User() {
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

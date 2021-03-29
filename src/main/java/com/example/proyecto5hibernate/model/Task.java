@@ -1,5 +1,8 @@
 package com.example.proyecto5hibernate.model;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,7 +24,8 @@ public class Task {
 
     private Instant finishDate;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
     public List<Tag> tags = new ArrayList<>();
 
     @ManyToOne(cascade = CascadeType.ALL)
