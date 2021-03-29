@@ -51,7 +51,7 @@ public class UserController {
      * @throws URISyntaxException
      */
     @PostMapping("/users")
-    public ResponseEntity<User> createFish(@RequestBody User user) throws URISyntaxException {
+    public ResponseEntity<User> createUser(@RequestBody User user) throws URISyntaxException {
         log.debug("REST request to create an user: {} ", user);
 
     Session session = HibernateUtil.getSessionFactory().openSession();
@@ -82,7 +82,7 @@ public class UserController {
      * @return ResponseEntity<User>
      */
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateFish(@PathVariable Long id, @RequestBody User newModifiedUser){
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User newModifiedUser){
         log.debug("REST request to update one user: {} ",newModifiedUser);
 
         Session session = HibernateUtil.getSessionFactory().openSession();
