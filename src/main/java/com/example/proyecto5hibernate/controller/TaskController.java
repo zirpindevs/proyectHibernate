@@ -1,7 +1,6 @@
 package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Task;
-import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.repository.TaskRepository;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -103,7 +102,7 @@ public class TaskController {
     }
 
     /**
-     * FIND ALL TASK
+     * FIND ALL TASKS
      * @return ResponseEntity<Task>
      */
     @GetMapping("/tasks")

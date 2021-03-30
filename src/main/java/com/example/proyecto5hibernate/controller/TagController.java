@@ -2,7 +2,6 @@ package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Tag;
 import com.example.proyecto5hibernate.model.TagColor;
-import com.example.proyecto5hibernate.model.Task;
 import com.example.proyecto5hibernate.repository.TagRepository;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -32,12 +30,12 @@ public class TagController {
         this.tagRepo = tagRepo;
     }
 
-    @GetMapping("/tags")
-    public List<Tag> findTags(){
-        log.debug("REST request to find all Tags");
-        return tagRepo.findAll();
-    }
-
+    /**
+     * CREATE A TAG
+     * @param tag
+     * @return List<Tag>
+     * @throws URISyntaxException
+     */
     @PostMapping("/tags")
     public ResponseEntity<Tag> createTag(@RequestBody Tag tag) throws URISyntaxException {
         log.debug("REST request to create a tag: {} ", tag);
@@ -68,9 +66,14 @@ public class TagController {
                 .body(tag);
     }
 
-
+    /**
+     * UPDATE TAG
+     * @param id
+     * @param newModifiedTag
+     * @return List<Tag>
+     */
     @PutMapping("/tags/{id}")
-    public ResponseEntity<Tag> updateFish(@PathVariable Long id, @RequestBody Tag newModifiedTag){
+    public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag newModifiedTag){
         log.debug("REST request to update one tag: {} ",newModifiedTag);
 
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -85,7 +88,7 @@ public class TagController {
 
 
         if(tag.getId() == null) {
-            log.warn("update fish without id");
+            log.warn("update tag without id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -102,14 +105,39 @@ public class TagController {
         }
 
         session.save(tag);
-
         session.getTransaction().commit();
-
         session.close();
 
         return ResponseEntity.ok().body(tag);
     }
 
+    /**
+     * FIND ALL TAGS
+     * @return List<Tag>
+     */
+    @GetMapping("/tags")
+    public List<Tag> findTags(){
+        log.debug("REST request to find all Tags");
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
+        Root<Tag> root = criteria.from(Tag.class);
+        criteria.select(root);
+
+        List<Tag> tags = session.createQuery(criteria).list();
+
+        session.close();
+
+        return tags;
+    }
+
+    /**
+     * FIND ONE TAG BY ID
+     * @param id
+     * @return List<Tag>
+     * @throws URISyntaxException
+     */
     @PostMapping("/tags/{id}")
     public ResponseEntity<Tag> findTagId(@PathVariable Long id) throws URISyntaxException {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -122,10 +150,31 @@ public class TagController {
 
         Tag tag = session.createQuery(criteria).uniqueResult();
 
-        System.out.println(tag);
         session.close();
 
         return ResponseEntity.ok().body(tag);
     }
 
+    /**
+     * FIND TAG BY NAME
+     * @param name
+     * @return ResponseEntity<Tag>
+     * @throws URISyntaxException
+     */
+    @PostMapping("/tags/name/{name}")
+    public ResponseEntity<Tag> findTagNane(@PathVariable String name) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
+        Root<Tag> root = criteria.from(Tag.class);
+
+        criteria.where(builder.equal(root.get("name"), name));
+
+        Tag tag = session.createQuery(criteria).uniqueResult();
+
+        session.close();
+
+        return ResponseEntity.ok().body(tag);
+    }
 }
