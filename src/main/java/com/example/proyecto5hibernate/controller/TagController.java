@@ -2,7 +2,7 @@ package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Tag;
 import com.example.proyecto5hibernate.model.TagColor;
-import com.example.proyecto5hibernate.repository.TagRepository;
+import com.example.proyecto5hibernate.model.Task;
 import com.example.proyecto5hibernate.repository.TagRepository;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -93,8 +93,6 @@ public class TagController {
 
         tag.setName(newModifiedTag.getName());
 
-        System.out.println("****************************************"+newModifiedTag.getColor()+"******************************");
-
         switch (newModifiedTag.getColor()) {
             case RED -> tag.setColor(TagColor.RED);
             case BLUE -> tag.setColor(TagColor.BLUE);
@@ -111,4 +109,23 @@ public class TagController {
 
         return ResponseEntity.ok().body(tag);
     }
+
+    @PostMapping("/tags/{id}")
+    public ResponseEntity<Tag> findTagId(@PathVariable Long id) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
+        Root<Tag> root = criteria.from(Tag.class);
+
+        criteria.where(builder.equal(root.get("id"), id));
+
+        Tag tag = session.createQuery(criteria).uniqueResult();
+
+        System.out.println(tag);
+        session.close();
+
+        return ResponseEntity.ok().body(tag);
+    }
+
 }

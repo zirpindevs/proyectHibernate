@@ -73,6 +73,7 @@ public class UserController {
                 .body(user);
     }
 
+
     /**
      * UPDATE USER
      * @param id
@@ -95,7 +96,7 @@ public class UserController {
 
 
         if(user.getId() == null) {
-            log.warn("update fish without id");
+            log.warn("update user without id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -111,6 +112,30 @@ public class UserController {
 
         session.getTransaction().commit();
 
+        session.close();
+
+        return ResponseEntity.ok().body(user);
+    }
+
+    /**
+     * Find User by ID
+     * @param id
+     * @return ResponseEntity<User>
+     * @throws URISyntaxException
+     */
+    @PostMapping("/users/{id}")
+    public ResponseEntity<User> findUserId(@PathVariable Long id) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+
+        criteria.where(builder.equal(root.get("id"), id));
+
+        User user = session.createQuery(criteria).uniqueResult();
+
+        System.out.println(user);
         session.close();
 
         return ResponseEntity.ok().body(user);

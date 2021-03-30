@@ -1,7 +1,6 @@
 package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Task;
-import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.repository.TaskRepository;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -91,6 +90,24 @@ public class TaskController {
 
         session.getTransaction().commit();
 
+        session.close();
+
+        return ResponseEntity.ok().body(task);
+    }
+
+    @PostMapping("/tasks/{id}")
+    public ResponseEntity<Task> findTaskId(@PathVariable Long id) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+
+        criteria.where(builder.equal(root.get("id"), id));
+
+        Task task = session.createQuery(criteria).uniqueResult();
+
+        System.out.println(task);
         session.close();
 
         return ResponseEntity.ok().body(task);
