@@ -23,6 +23,10 @@ public class Tag {
     public Tag() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }

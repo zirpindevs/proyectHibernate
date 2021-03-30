@@ -61,18 +61,16 @@ public class UserController {
 
         session.beginTransaction();
 
-        User userDB = user;
-
-        userDB.setCreatedDate(Instant.now());
-        session.save(userDB);
+        user.setCreatedDate(Instant.now());
+        session.save(user);
 
         session.getTransaction().commit();
 
         session.close();
 
         return ResponseEntity
-                .created(new URI("/api/users/" + userDB.getName()))
-                .body(userDB);
+                .created(new URI("/api/users/" + user.getName()))
+                .body(user);
     }
 
     /**

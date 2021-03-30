@@ -48,18 +48,16 @@ public class TaskController {
 
         session.beginTransaction();
 
-        Task taskDB = task;
-
-        taskDB.setFinishDate(Instant.now());
-        session.save(taskDB);
+        task.setFinishDate(Instant.now());
+        session.save(task);
 
         session.getTransaction().commit();
 
         session.close();
 
         return ResponseEntity
-                .created(new URI("/api/tasks/" + taskDB.getTitle()))
-                .body(taskDB);
+                .created(new URI("/api/tasks/" + task.getTitle()))
+                .body(task);
     }
 
 
