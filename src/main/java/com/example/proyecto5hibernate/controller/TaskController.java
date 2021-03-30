@@ -1,6 +1,7 @@
 package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Task;
+import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.repository.TaskRepository;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -30,12 +31,13 @@ public class TaskController {
         this.taskRepo = taskRepo;
     }
 
-    @GetMapping("/tasks")
-    public List<Task> findTasks(){
-        log.debug("REST request to find all tasks");
-        return taskRepo.findAll();
-    }
 
+    /**
+     * CREATE TASK
+     * @param task
+     * @return ResponseEntity<Task>
+     * @throws URISyntaxException
+     */
     @PostMapping("/tasks")
     public ResponseEntity<Task> createTask(@RequestBody Task task) throws URISyntaxException {
         log.debug("REST request to create a task: {} ", task);
@@ -59,9 +61,14 @@ public class TaskController {
                 .body(task);
     }
 
-
+    /**
+     * UPDATE TASK
+     * @param id
+     * @param newModifiedTask
+     * @return ResponseEntity<Task>
+     */
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<Task> updateFish(@PathVariable Long id, @RequestBody Task newModifiedTask){
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task newModifiedTask){
         log.debug("REST request to update one task: {} ",newModifiedTask);
 
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -76,7 +83,7 @@ public class TaskController {
 
 
         if(task.getId() == null) {
-            log.warn("update fish without id");
+            log.warn("update task without id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
@@ -95,6 +102,34 @@ public class TaskController {
         return ResponseEntity.ok().body(task);
     }
 
+    /**
+     * FIND ALL TASK
+     * @return ResponseEntity<Task>
+     */
+    @GetMapping("/tasks")
+    public List<Task> findTasks(){
+        log.debug("REST request to find all tasks");
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+        criteria.select(root);
+
+        List<Task> tasks = session.createQuery(criteria).list();
+
+        session.close();
+
+        return tasks;
+    }
+
+    /**
+     * FIND TASK BY ID
+     * @param id
+     * @return ResponseEntity<Task>
+     * @throws URISyntaxException
+     */
     @PostMapping("/tasks/{id}")
     public ResponseEntity<Task> findTaskId(@PathVariable Long id) throws URISyntaxException {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -112,4 +147,28 @@ public class TaskController {
 
         return ResponseEntity.ok().body(task);
     }
+
+    /**
+     * FIND TASK BY TITLE
+     * @param title
+     * @return ResponseEntity<Task>
+     * @throws URISyntaxException
+     */
+    @PostMapping("/tasks/title/{title}")
+    public ResponseEntity<Task> findTaskTitle(@PathVariable String title) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
+        Root<Task> root = criteria.from(Task.class);
+
+        criteria.where(builder.equal(root.get("title"), title));
+
+        Task task = session.createQuery(criteria).uniqueResult();
+
+        session.close();
+
+        return ResponseEntity.ok().body(task);
+    }
+
 }

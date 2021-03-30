@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import util.HibernateUtil;
 
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -18,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -31,18 +31,6 @@ public class UserController {
         this.userRepo = userRepo;
     }
 
-
-
-/*    @GetMapping("/users")
-    public List<User> findAll() {
-        return userService.findAllFromRepository();
-    }*/
-
-    @GetMapping("/users")
-    public List<User> findUsers(){
-        log.debug("REST request to find all users");
-        return userRepo.findAll();
-    }
 
     /**
      * CREATE USER
@@ -101,7 +89,6 @@ public class UserController {
         }
 
         session.beginTransaction();
-        System.out.println(newModifiedUser);
 
         user.setName(newModifiedUser.getName());
         user.setSurname(newModifiedUser.getSurname());
@@ -109,16 +96,36 @@ public class UserController {
         user.setActive(newModifiedUser.getActive());
 
         session.save(user);
-
         session.getTransaction().commit();
-
         session.close();
 
         return ResponseEntity.ok().body(user);
     }
 
     /**
-     * Find User by ID
+     * FIND ALL USERS
+     * @return List<User>
+     */
+    @GetMapping("/users")
+    public List<User> findUsers(){
+        log.debug("REST request to find all users");
+
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+        criteria.select(root);
+
+        List<User> users = session.createQuery(criteria).list();
+
+        session.close();
+
+        return users;
+    }
+
+    /**
+     * Find USER BY ID
      * @param id
      * @return ResponseEntity<User>
      * @throws URISyntaxException
@@ -135,10 +142,31 @@ public class UserController {
 
         User user = session.createQuery(criteria).uniqueResult();
 
-        System.out.println(user);
         session.close();
 
         return ResponseEntity.ok().body(user);
     }
 
+    /**
+     * FIND USER BY NAME
+     * @param name
+     * @return ResponseEntity<User>
+     * @throws URISyntaxException
+     */
+    @PostMapping("/users/name/{name}")
+    public ResponseEntity<User> findUserName(@PathVariable String name) throws URISyntaxException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> criteria = builder.createQuery(User.class);
+        Root<User> root = criteria.from(User.class);
+
+        criteria.where(builder.equal(root.get("name"), name));
+
+        User user = session.createQuery(criteria).uniqueResult();
+
+        session.close();
+
+        return ResponseEntity.ok().body(user);
+    }
 }
