@@ -72,11 +72,11 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findByName(String name) {
+    public List<Tag> findByAllByName(String name) {
         log.info("REST request to find an tag by title");
 
         if(name.isEmpty())
             return null;
-        return this.tagDAO.findByName(name);
+        return this.tagDAO.findByAllByName(name);
     }
 }

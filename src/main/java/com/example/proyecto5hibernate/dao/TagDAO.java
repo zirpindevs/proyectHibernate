@@ -10,7 +10,7 @@ public interface TagDAO {
     List<Tag> findAllFromRepository();
     List<Tag> findAll();
     Tag findById(Long id);
-    Tag findByName(String name);
+    List<Tag> findByAllByName(String name);
     Tag createTag(Tag tag);
     Tag modifyTag(Tag tag, Tag findedTag);
 

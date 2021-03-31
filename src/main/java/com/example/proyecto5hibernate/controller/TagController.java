@@ -89,7 +89,7 @@ public class TagController {
      * @return List<Tag>
      * @throws URISyntaxException
      */
-    @PostMapping("/tags/{id}")
+    @GetMapping("/tags/{id}")
     public ResponseEntity<Tag> findTagId(@PathVariable Long id) throws URISyntaxException {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -107,19 +107,14 @@ public class TagController {
     }
 
     /**
-     * FIND TAG BY NAME
+     * FIND ALL TAGS BY NAME
      * @param name
      * @return ResponseEntity<Tag>
      * @throws URISyntaxException
      */
-    @PostMapping("/tags/name/{name}")
-    public ResponseEntity<Tag> findTagNane(@PathVariable String name) throws URISyntaxException {
+    @GetMapping("/tags/name/{name}")
+    public List<Tag> findTagName(@PathVariable String name) throws URISyntaxException {
 
-        Tag findTagName = this.tagService.findByName(name);
-
-        if (findTagName == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        return ResponseEntity.ok().body(findTagName);
+        return this.tagService.findByAllByName(name);
     }
 }

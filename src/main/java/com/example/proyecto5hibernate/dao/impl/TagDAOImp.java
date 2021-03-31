@@ -105,16 +105,19 @@ public class TagDAOImp implements TagDAO {
     }
 
     @Override
-    public Tag findByName(String name) {
+    public List<Tag> findByAllByName(String name) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
         Root<Tag> root = criteria.from(Tag.class);
+        criteria.select(root);
 
-        criteria.where(builder.equal(root.get("name"), name));
+        criteria.where(builder.like(root.get("name"), "%"+name+"%"));
 
-        Tag tag = session.createQuery(criteria).uniqueResult();
+        List<Tag> tag = session.createQuery(criteria).list();
+
+        System.out.println("*********************************************"+tag+"*************************************");
 
         session.close();
 
