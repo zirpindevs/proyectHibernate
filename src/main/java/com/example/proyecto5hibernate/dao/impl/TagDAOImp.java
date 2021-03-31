@@ -112,12 +112,9 @@ public class TagDAOImp implements TagDAO {
         CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
         Root<Tag> root = criteria.from(Tag.class);
         criteria.select(root);
-
         criteria.where(builder.like(root.get("name"), "%"+name+"%"));
 
         List<Tag> tag = session.createQuery(criteria).list();
-
-        System.out.println("*********************************************"+tag+"*************************************");
 
         session.close();
 

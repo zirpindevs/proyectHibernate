@@ -34,7 +34,7 @@ public class TagController {
     /**
      * CREATE A TAG
      * @param tag
-     * @return List<Tag>
+     * @return ResponseEntity<Tag>
      * @throws URISyntaxException
      */
     @PostMapping("/tags")
@@ -55,7 +55,7 @@ public class TagController {
      * UPDATE TAG
      * @param id
      * @param modifiedTag
-     * @return List<Tag>
+     * @return ResponseEntity<Tag>
      */
     @PutMapping("/tags/{id}")
     public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag modifiedTag){
@@ -86,7 +86,7 @@ public class TagController {
     /**
      * FIND ONE TAG BY ID
      * @param id
-     * @return List<Tag>
+     * @return ResponseEntity<Tag>
      * @throws URISyntaxException
      */
     @GetMapping("/tags/{id}")
@@ -109,7 +109,7 @@ public class TagController {
     /**
      * FIND ALL TAGS BY NAME
      * @param name
-     * @return ResponseEntity<Tag>
+     * @return List<Tag>
      * @throws URISyntaxException
      */
     @GetMapping("/tags/name/{name}")
