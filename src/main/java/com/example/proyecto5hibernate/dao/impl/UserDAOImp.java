@@ -77,7 +77,9 @@ public class UserDAOImp implements UserDAO {
 
     @Override
     public List<User> findAll(){
-        return manager.createQuery("select u from User u").getResultList();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        return session.createQuery("from User", User.class ).list();
 
     }
     @Override

@@ -2,6 +2,7 @@ package com.example.proyecto5hibernate.dao.impl;
 
 import com.example.proyecto5hibernate.dao.TaskDAO;
 import com.example.proyecto5hibernate.model.Task;
+import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.repository.TaskRepository;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,6 @@ public class TaskDAOImp implements TaskDAO {
 
         session.beginTransaction();
 
-        session.beginTransaction();
-
         task.setFinishDate(Instant.now());
         session.save(task);
 
@@ -77,8 +76,10 @@ public class TaskDAOImp implements TaskDAO {
 
     @Override
     public List<Task> findAll(){
-        return manager.createQuery("select t from Task t").getResultList();
 
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        return session.createQuery("from Task", Task.class ).list();
     }
     @Override
     public Task findById(Long id){

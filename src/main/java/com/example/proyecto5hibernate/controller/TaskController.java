@@ -1,6 +1,7 @@
 package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Task;
+import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.service.impl.TaskServiceImpl;
 import org.hibernate.Session;
 import org.slf4j.Logger;
@@ -40,30 +41,14 @@ public class TaskController {
     public ResponseEntity<Task> createTask(@RequestBody Task task) throws URISyntaxException {
         log.debug("REST request to create a task: {} ", task);
 
-/*
-        Session session = HibernateUtil.getSessionFactory().openSession();
-*/
-
         if (task.getId() != null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-
         Task createTask = this.taskService.createTask(task);
 
-/*
-        session.beginTransaction();
-
-        task.setFinishDate(Instant.now());
-        session.save(task);
-
-        session.getTransaction().commit();
-
-        session.close();
-*/
-
         return ResponseEntity
-                .created(new URI("/api/tasks/" + task.getTitle()))
-                .body(task);
+                .created(new URI("/api/tasks/" + createTask.getTitle()))
+                .body(createTask);
     }
 
     /**
@@ -75,36 +60,13 @@ public class TaskController {
     @PutMapping("/tasks/{id}")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task modifiedTask){
         log.debug("REST request to update one task: {} ",modifiedTask);
-/*
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
-
-        criteria.where(builder.equal(root.get("id"), id));
-
-        Task task = session.createQuery(criteria).uniqueResult();*/
 
         Task updateTask = this.taskService.updateTask(id, modifiedTask);
-
 
         if(updateTask.getId() == null) {
             log.warn("update task without id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-/*        session.beginTransaction();
-
-        task.setTitle(newModifiedTask.getTitle());
-        task.setDescription(newModifiedTask.getDescription());
-        task.setFinished(newModifiedTask.getFinished());
-
-        session.save(task);
-
-        session.getTransaction().commit();
-
-        session.close();*/
 
         return ResponseEntity.ok().body(updateTask);
     }
@@ -117,18 +79,7 @@ public class TaskController {
     public List<Task> findTasks(){
         log.debug("REST request to find all tasks");
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
-        criteria.select(root);
-
-        List<Task> tasks = session.createQuery(criteria).list();
-
-        session.close();
-
-        return tasks;
+        return this.taskService.findAll();
     }
 
     /**
@@ -139,20 +90,12 @@ public class TaskController {
      */
     @PostMapping("/tasks/{id}")
     public ResponseEntity<Task> findTaskId(@PathVariable Long id) throws URISyntaxException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
+        Task findTask = this.taskService.findOne(id);
+        if (findTask == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        criteria.where(builder.equal(root.get("id"), id));
-
-        Task task = session.createQuery(criteria).uniqueResult();
-
-        System.out.println(task);
-        session.close();
-
-        return ResponseEntity.ok().body(task);
+        return ResponseEntity.ok().body(findTask);
     }
 
     /**
@@ -163,19 +106,11 @@ public class TaskController {
      */
     @PostMapping("/tasks/title/{title}")
     public ResponseEntity<Task> findTaskTitle(@PathVariable String title) throws URISyntaxException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        Task findTaskTitle = this.taskService.findByTitle(title);
 
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
-        Root<Task> root = criteria.from(Task.class);
-
-        criteria.where(builder.equal(root.get("title"), title));
-
-        Task task = session.createQuery(criteria).uniqueResult();
-
-        session.close();
-
-        return ResponseEntity.ok().body(task);
+        if (findTaskTitle == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok().body(findTaskTitle);
     }
 
 }
