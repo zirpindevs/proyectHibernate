@@ -69,12 +69,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByName(String name) {
+    public List<User> findAllByName(String name) {
         log.info("REST request to find an user by name");
 
         if(name.isEmpty())
             return null;
-        return this.userDAO.findByName(name);
+        return this.userDAO.findAllByName(name);
     }
 
 

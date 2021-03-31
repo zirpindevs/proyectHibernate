@@ -93,7 +93,7 @@ public class UserController {
      * @return ResponseEntity<User>
      * @throws URISyntaxException
      */
-    @PostMapping("/users/{id}")
+    @GetMapping("/users/{id}")
     public ResponseEntity<User> findUserId(@PathVariable Long id) throws URISyntaxException {
 
         User findUser = this.userService.findOne(id);
@@ -107,17 +107,14 @@ public class UserController {
     /**
      * FIND USER BY NAME
      * @param name
-     * @return ResponseEntity<User>
+     * @return List<User>
      * @throws URISyntaxException
      */
-    @PostMapping("/users/name/{name}")
-    public ResponseEntity<User> findUserName(@PathVariable String name) throws URISyntaxException {
+    @GetMapping("/users/name/{name}")
+    public List<User> findUserName(@PathVariable String name) throws URISyntaxException {
 
-        User findUserName = this.userService.findByName(name);
+        return this.userService.findAllByName(name);
 
-        if (findUserName == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok().body(findUserName);
     }
 
 }
