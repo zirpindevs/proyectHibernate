@@ -13,6 +13,6 @@ public interface TaskService {
 
     List<Task> findAll();
     Task findOne(Long id);
-    Task findByTitle(String title);
+    List<Task> findAllByTitle(String title);
 
     }

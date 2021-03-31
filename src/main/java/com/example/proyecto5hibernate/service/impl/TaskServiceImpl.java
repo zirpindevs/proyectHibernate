@@ -70,12 +70,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findByTitle(String title) {
+    public List<Task> findAllByTitle(String title) {
         log.info("REST request to find an task by title");
 
         if(title.isEmpty())
             return null;
-        return this.taskDAO.findByTitle(title);
+        return this.taskDAO.findAllByTitle(title);
     }
 
 

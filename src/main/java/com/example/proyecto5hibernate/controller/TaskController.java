@@ -73,7 +73,7 @@ public class TaskController {
 
     /**
      * FIND ALL TASKS
-     * @return ResponseEntity<Task>
+     * @return List<Task>
      */
     @GetMapping("/tasks")
     public List<Task> findTasks(){
@@ -88,7 +88,7 @@ public class TaskController {
      * @return ResponseEntity<Task>
      * @throws URISyntaxException
      */
-    @PostMapping("/tasks/{id}")
+    @GetMapping("/tasks/{id}")
     public ResponseEntity<Task> findTaskId(@PathVariable Long id) throws URISyntaxException {
 
         Task findTask = this.taskService.findOne(id);
@@ -101,16 +101,13 @@ public class TaskController {
     /**
      * FIND TASK BY TITLE
      * @param title
-     * @return ResponseEntity<Task>
+     * @return List<Task>
      * @throws URISyntaxException
      */
-    @PostMapping("/tasks/title/{title}")
-    public ResponseEntity<Task> findTaskTitle(@PathVariable String title) throws URISyntaxException {
-        Task findTaskTitle = this.taskService.findByTitle(title);
+    @GetMapping("/tasks/title/{title}")
+    public List<Task> findTaskTitle(@PathVariable String title) throws URISyntaxException {
 
-        if (findTaskTitle == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok().body(findTaskTitle);
+        return this.taskService.findAllByTitle(title);
     }
 
 }

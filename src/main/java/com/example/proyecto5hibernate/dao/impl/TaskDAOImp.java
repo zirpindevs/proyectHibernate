@@ -100,16 +100,17 @@ public class TaskDAOImp implements TaskDAO {
     }
 
     @Override
-    public Task findByTitle(String title) {
+    public List<Task> findAllByTitle(String title) {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Task> criteria = builder.createQuery(Task.class);
         Root<Task> root = criteria.from(Task.class);
 
-        criteria.where(builder.equal(root.get("title"), title));
+        criteria.select(root);
+        criteria.where(builder.like(root.get("title"), "%"+title+"%"));
 
-        Task task = session.createQuery(criteria).uniqueResult();
+        List<Task> task = session.createQuery(criteria).list();
 
         session.close();
 

@@ -10,7 +10,7 @@ public interface TaskDAO {
     List<Task> findAllFromRepository();
     List<Task> findAll();
     Task findById(Long id);
-    Task findByTitle(String title);
+    List<Task> findAllByTitle(String title);
     Task createTask(Task task);
     Task modifyTask(Task task, Task findedTask);
 
