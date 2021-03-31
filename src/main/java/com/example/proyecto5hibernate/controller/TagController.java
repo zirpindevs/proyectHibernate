@@ -2,7 +2,7 @@ package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.Tag;
 import com.example.proyecto5hibernate.model.TagColor;
-import com.example.proyecto5hibernate.repository.TagRepository;
+import com.example.proyecto5hibernate.service.impl.TagServiceImpl;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +24,12 @@ public class TagController {
 
     private final Logger log = LoggerFactory.getLogger(TagController.class);
 
-    private final TagRepository tagRepo;
+    private final TagServiceImpl tagService;
 
-    public TagController(TagRepository tagRepo) {
-        this.tagRepo = tagRepo;
+    public TagController(TagServiceImpl tagService) {
+        this.tagService = tagService;
     }
+
 
     /**
      * CREATE A TAG
@@ -40,75 +41,35 @@ public class TagController {
     public ResponseEntity<Tag> createTag(@RequestBody Tag tag) throws URISyntaxException {
         log.debug("REST request to create a tag: {} ", tag);
 
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
         if (tag.getId() != null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-     switch (tag.getColor()){
-         case RED -> tag.setColor(TagColor.RED);
-         case BLUE -> tag.setColor(TagColor.BLUE);
-         case GREEN -> tag.setColor(TagColor.GREEN);
-         case YELLOW -> tag.setColor(TagColor.YELLOW);
-         default -> tag.setColor(TagColor.RED);
-     }
-
-        session.beginTransaction();
-
-        session.save(tag);
-
-        session.getTransaction().commit();
-
-        session.close();
+        Tag createTag = this.tagService.createTag(tag);
 
         return ResponseEntity
-                .created(new URI("/api/tags/" + tag.getName()))
-                .body(tag);
+                .created(new URI("/api/tags/" + createTag.getName()))
+                .body(createTag);
     }
 
     /**
      * UPDATE TAG
      * @param id
-     * @param newModifiedTag
+     * @param modifiedTag
      * @return List<Tag>
      */
     @PutMapping("/tags/{id}")
-    public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag newModifiedTag){
-        log.debug("REST request to update one tag: {} ",newModifiedTag);
+    public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag modifiedTag){
+        log.debug("REST request to update one tag: {} ",modifiedTag);
 
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Tag updateTag = this.tagService.updateTag(id, modifiedTag);
 
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
-        Root<Tag> root = criteria.from(Tag.class);
-
-        criteria.where(builder.equal(root.get("id"), id));
-
-        Tag tag = session.createQuery(criteria).uniqueResult();
-
-
-        if(tag.getId() == null) {
+        if(updateTag.getId() == null) {
             log.warn("update tag without id");
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        session.beginTransaction();
-
-        tag.setName(newModifiedTag.getName());
-
-        switch (newModifiedTag.getColor()) {
-            case RED -> tag.setColor(TagColor.RED);
-            case BLUE -> tag.setColor(TagColor.BLUE);
-            case GREEN -> tag.setColor(TagColor.GREEN);
-            case YELLOW -> tag.setColor(TagColor.YELLOW);
-            default -> tag.setColor(TagColor.RED);
-        }
-
-        session.save(tag);
-        session.getTransaction().commit();
-        session.close();
-
-        return ResponseEntity.ok().body(tag);
+        return ResponseEntity.ok().body(updateTag);
     }
 
     /**
@@ -118,18 +79,8 @@ public class TagController {
     @GetMapping("/tags")
     public List<Tag> findTags(){
         log.debug("REST request to find all Tags");
-        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
-        Root<Tag> root = criteria.from(Tag.class);
-        criteria.select(root);
-
-        List<Tag> tags = session.createQuery(criteria).list();
-
-        session.close();
-
-        return tags;
+        return this.tagService.findAll();
     }
 
     /**
@@ -148,11 +99,11 @@ public class TagController {
 
         criteria.where(builder.equal(root.get("id"), id));
 
-        Tag tag = session.createQuery(criteria).uniqueResult();
+        Tag findTag = this.tagService.findOne(id);
 
         session.close();
 
-        return ResponseEntity.ok().body(tag);
+        return ResponseEntity.ok().body(findTag);
     }
 
     /**
@@ -163,18 +114,12 @@ public class TagController {
      */
     @PostMapping("/tags/name/{name}")
     public ResponseEntity<Tag> findTagNane(@PathVariable String name) throws URISyntaxException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
 
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Tag> criteria = builder.createQuery(Tag.class);
-        Root<Tag> root = criteria.from(Tag.class);
+        Tag findTagName = this.tagService.findByName(name);
 
-        criteria.where(builder.equal(root.get("name"), name));
+        if (findTagName == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        Tag tag = session.createQuery(criteria).uniqueResult();
-
-        session.close();
-
-        return ResponseEntity.ok().body(tag);
+        return ResponseEntity.ok().body(findTagName);
     }
 }
