@@ -1,6 +1,8 @@
 package com.example.proyecto5hibernate.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -18,6 +20,14 @@ public class Tag {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_task")
     private Task task;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "tags_taks",
+            joinColumns = {@JoinColumn(name="task_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name="tags_id", referencedColumnName = "id")}
+    )
+    private List<Task> tasksList = new ArrayList<>();
 
 
     public Tag() {
@@ -54,6 +64,13 @@ public class Tag {
         return this;
     }
 
+    public List<Task> getTasksList() {
+        return tasksList;
+    }
+
+    public void setTasksList(List<Task> tasksList) {
+        this.tasksList = tasksList;
+    }
 
     @Override
     public String toString() {

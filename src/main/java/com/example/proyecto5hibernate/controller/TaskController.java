@@ -3,6 +3,7 @@ package com.example.proyecto5hibernate.controller;
 import com.example.proyecto5hibernate.model.Task;
 import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.service.impl.TaskServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TaskController {
      * @throws URISyntaxException
      */
     @PostMapping("/tasks")
+    @ApiOperation("Post create task")
     public ResponseEntity<Task> createTask(@RequestBody Task task) throws URISyntaxException {
         log.debug("REST request to create a task: {} ", task);
 
@@ -58,6 +60,7 @@ public class TaskController {
      * @return ResponseEntity<Task>
      */
     @PutMapping("/tasks/{id}")
+    @ApiOperation("PUT update taks")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task modifiedTask){
         log.debug("REST request to update one task: {} ",modifiedTask);
 
@@ -76,6 +79,7 @@ public class TaskController {
      * @return List<Task>
      */
     @GetMapping("/tasks")
+    @ApiOperation("GET all tasks")
     public List<Task> findTasks(){
         log.debug("REST request to find all tasks");
 
@@ -89,6 +93,7 @@ public class TaskController {
      * @throws URISyntaxException
      */
     @GetMapping("/tasks/{id}")
+    @ApiOperation("GET find taks")
     public ResponseEntity<Task> findTaskId(@PathVariable Long id) throws URISyntaxException {
 
         Task findTask = this.taskService.findOne(id);
@@ -105,6 +110,7 @@ public class TaskController {
      * @throws URISyntaxException
      */
     @GetMapping("/tasks/title/{title}")
+    @ApiOperation("find task by title")
     public List<Task> findTaskTitle(@PathVariable String title) throws URISyntaxException {
 
         return this.taskService.findAllByTitle(title);

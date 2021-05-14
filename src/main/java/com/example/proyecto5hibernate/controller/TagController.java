@@ -3,6 +3,7 @@ package com.example.proyecto5hibernate.controller;
 import com.example.proyecto5hibernate.model.Tag;
 import com.example.proyecto5hibernate.model.TagColor;
 import com.example.proyecto5hibernate.service.impl.TagServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TagController {
      * @throws URISyntaxException
      */
     @PostMapping("/tags")
+    @ApiOperation("Post create tag")
     public ResponseEntity<Tag> createTag(@RequestBody Tag tag) throws URISyntaxException {
         log.debug("REST request to create a tag: {} ", tag);
 
@@ -58,6 +60,7 @@ public class TagController {
      * @return ResponseEntity<Tag>
      */
     @PutMapping("/tags/{id}")
+    @ApiOperation("PUT update tags")
     public ResponseEntity<Tag> updateTag(@PathVariable Long id, @RequestBody Tag modifiedTag){
         log.debug("REST request to update one tag: {} ",modifiedTag);
 
@@ -77,6 +80,7 @@ public class TagController {
      * @return List<Tag>
      */
     @GetMapping("/tags")
+    @ApiOperation("GET find tags")
     public List<Tag> findTags(){
         log.debug("REST request to find all Tags");
 
@@ -90,6 +94,7 @@ public class TagController {
      * @throws URISyntaxException
      */
     @GetMapping("/tags/{id}")
+    @ApiOperation("find tag id")
     public ResponseEntity<Tag> findTagId(@PathVariable Long id) throws URISyntaxException {
         Session session = HibernateUtil.getSessionFactory().openSession();
 
@@ -113,6 +118,7 @@ public class TagController {
      * @throws URISyntaxException
      */
     @GetMapping("/tags/name/{name}")
+    @ApiOperation("Get tags name")
     public List<Tag> findTagName(@PathVariable String name) throws URISyntaxException {
 
         return this.tagService.findByAllByName(name);

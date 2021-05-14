@@ -2,6 +2,7 @@ package com.example.proyecto5hibernate.controller;
 
 import com.example.proyecto5hibernate.model.User;
 import com.example.proyecto5hibernate.service.impl.UserServiceImpl;
+import io.swagger.annotations.ApiOperation;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class UserController {
      * @throws URISyntaxException
      */
     @PostMapping("/users")
+    @ApiOperation("Post create user")
     public ResponseEntity<User> createUser(@RequestBody User user) throws URISyntaxException {
         log.debug("REST request to create an user: {} ", user);
 
@@ -60,6 +62,7 @@ public class UserController {
      * @return ResponseEntity<User>
      */
     @PutMapping("/users/{id}")
+    @ApiOperation("PUT update user")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User modifiedUser) {
         log.debug("REST request to update one user: {} ", modifiedUser);
 
@@ -81,6 +84,7 @@ public class UserController {
      * @return List<User>
      */
     @GetMapping("/users")
+    @ApiOperation("GET find all users")
     public List<User> findAllUsers() {
         log.debug("REST request to find all users");
         return this.userService.findAllFromRepository();
@@ -94,6 +98,7 @@ public class UserController {
      * @throws URISyntaxException
      */
     @GetMapping("/users/{id}")
+    @ApiOperation("find user id")
     public ResponseEntity<User> findUserId(@PathVariable Long id) throws URISyntaxException {
 
         User findUser = this.userService.findOne(id);
@@ -111,6 +116,7 @@ public class UserController {
      * @throws URISyntaxException
      */
     @GetMapping("/users/name/{name}")
+    @ApiOperation("Get users by name")
     public List<User> findUserName(@PathVariable String name) throws URISyntaxException {
 
         return this.userService.findAllByName(name);

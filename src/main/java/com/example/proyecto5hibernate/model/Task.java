@@ -24,7 +24,7 @@ public class Task {
 
     private Instant finishDate;
 
-    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "task", fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     public List<Tag> tags = new ArrayList<>();
 
